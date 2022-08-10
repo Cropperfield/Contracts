@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at cronoscan.com on 2022-08-02
-*/
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
@@ -2164,10 +2160,13 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
        require (slotnumber<6, "5 slots");
        uint256 pricetoBoost = 0;
        Staker storage staker = Stakers[msg.sender];
+
+       ClaimRewards(); 
+
        if (slotnumber == 1){
            pricetoBoost = 10;
-           require (MagicTrickAccessories.balanceOf(msg.sender,5)>pricetoBoost);
-           if (staker.GlovesSlot<1) {
+           require (MagicTrickAccessories.balanceOf(msg.sender,5)>=pricetoBoost);
+           if (staker.GlovesSlot<1 || staker.GlovesSlot>4) {
                return;
            }
            if (StakeSlot[msg.sender][0]>0){
@@ -2180,8 +2179,8 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
        }
        if (slotnumber == 2){
            pricetoBoost = 30;
-           require (MagicTrickAccessories.balanceOf(msg.sender,5)>pricetoBoost);
-           if (staker.DiceSlot<1) {
+           require (MagicTrickAccessories.balanceOf(msg.sender,5)>=pricetoBoost);
+           if (staker.DiceSlot<1 || staker.DiceSlot>4) {
                return;
            }
            if (StakeSlot[msg.sender][1]>0){
@@ -2193,8 +2192,8 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
        }
        if (slotnumber == 3){
            pricetoBoost = 60;
-           require (MagicTrickAccessories.balanceOf(msg.sender,5)>pricetoBoost);
-           if (staker.CardsSlot<1) {
+           require (MagicTrickAccessories.balanceOf(msg.sender,5)>=pricetoBoost);
+           if (staker.CardsSlot<1 || staker.CardsSlot>4) {
                return;
            }
            if (StakeSlot[msg.sender][2]>0){
@@ -2206,8 +2205,8 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
        }
        if (slotnumber == 4){
            pricetoBoost = 150;
-           require (MagicTrickAccessories.balanceOf(msg.sender,5)>pricetoBoost);
-           if (staker.HatSlot<1) {
+           require (MagicTrickAccessories.balanceOf(msg.sender,5)>=pricetoBoost);
+           if (staker.HatSlot<1 || staker.HatSlot>4) {
                return;
            }
            if (StakeSlot[msg.sender][3]>0){
@@ -2219,8 +2218,8 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
        }
        if (slotnumber == 5){
            pricetoBoost = 500;
-           require (MagicTrickAccessories.balanceOf(msg.sender,5)>pricetoBoost);
-           if (staker.SphereSlot<1) {
+           require (MagicTrickAccessories.balanceOf(msg.sender,5)>=pricetoBoost);
+           if (staker.SphereSlot<1 || staker.SphereSlot>4) {
                return;
            }
            if (StakeSlot[msg.sender][4]>0){
@@ -2230,6 +2229,8 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
         BMagicTrickAccessories.burn(msg.sender,5,pricetoBoost);
         staker.SphereSlot ++;
        }
+
+    staker.rewardDebt = staker.MintingPower*AccumulatedRewardsPerShare;
        
    }
 
@@ -2257,7 +2258,7 @@ address payable private Wallet_Burn = payable(0x00000000000000000000000000000000
  
    //updates the pool prize balance and adds the claimable rewards
    function updatepoolbalance() private {
-         if (TotalNFTStaked < 10) {
+         if (TotalNFTStaked < 1) {
               return;
          }
          uint256 newrewards = address(this).balance + TotalRewardsHarvested - OldBalance;
