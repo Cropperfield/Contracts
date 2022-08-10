@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at cronoscan.com on 2022-08-02
-*/
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
@@ -1831,7 +1827,7 @@ contract MagicTrickAccessories is ERC1155, AccessControl, ERC1155Burnable, Reent
     uint public CombineshardsMultiplier = 50;
     uint256 public PoolFee = 50;
     uint256 public totalnfts = 50;
-    uint256 public totaltomint = 10000;
+    uint256 public totaltomint = 3000;
     uint256[] public minted = [0, 0, 0, 0, 0];
     uint256 public MINT_PRICE = 1000000*1e18;
     IERC20 public Cropperfield;
@@ -1879,6 +1875,14 @@ contract MagicTrickAccessories is ERC1155, AccessControl, ERC1155Burnable, Reent
     function set_Minter_Role(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
        _grantRole(MINTER_ROLE, account);
     }
+    
+    function mintMagicTrickAccessory(address account, uint256 id, uint256 amount)
+        public
+        onlyRole(MINTER_ROLE)
+    {
+        _mint(account, id, amount, "");
+        minted[id] = minted[id] + amount;
+    }   
 
     function mintMagicShards(address account, uint256 amount, bytes memory data)
         public
